@@ -28,8 +28,83 @@ class App extends Component {
         // this.state.loading = false;
       })
       .catch(err => {
-        console.log('error in getting nearby people', err);
+        console.log('error in getting image', err);
       });
+
+    function removeDiv(id) {
+      var elem = document.getElementById(id);
+      return elem.parentNode.removeChild(elem);
+    }
+
+    function addNewDiv(index) {
+      // implement it on page refresh
+      var referenceNode = document.getElementById('img-box-' + index);
+
+      var x = document.getElementsByClassName('image-open-details');
+      console.log(x);
+      let foundExistingImageDetailsDiv = false;
+      for (let i = 0; i < x.length; i++) {
+        if (x[i].id === 'img-box-after-' + index) {
+          foundExistingImageDetailsDiv = true;
+        }
+        removeDiv(x[i].id);
+        // x[i].value = element.value;
+      }
+      if (foundExistingImageDetailsDiv) {
+        return;
+      }
+
+      // Create a new element
+      var newNode = document.createElement('div');
+      newNode.id = 'img-box-after-' + index;
+      newNode.className = 'image-open-details col-sm-12';
+      newNode.innerHTML = 'This will contain the image details';
+
+      // Get the reference node
+      // var referenceNode = document.getElementById('img-box-' + index);
+
+      // Insert the new node before the reference node
+      referenceNode.after(newNode);
+
+      // var newDiv = document.createElement('div');
+      // var label = document.createTextNode(' - new div - ');
+      // var element = document.getElementById('img-box-' + index);
+      // var uploaderDiv = elements[0];
+
+      // newDiv.appendChild(label);
+      // element.insertBefore(newDiv, uploaderDiv.children[0]);
+    }
+
+    // addNewDiv();
+
+    this.openImageHandler = index => {
+      console.log('clicked', index);
+
+      var allImageHolder = document.getElementById('all-image-holder');
+
+      var allImageItems = allImageHolder.getElementsByClassName('img-box');
+      let totalImages = allImageItems.length;
+      let lastItemOfClickedRow;
+
+      console.log(window.innerWidth);
+
+      let windowWidth = window.innerWidth;
+      if (windowWidth <= 575) {
+        lastItemOfClickedRow = index;
+      } else if (windowWidth <= 767) {
+        lastItemOfClickedRow = Math.ceil((index + 1) / 3) * 3 - 1;
+      } else if (windowWidth <= 991) {
+        lastItemOfClickedRow = Math.ceil((index + 1) / 4) * 4 - 1;
+      } else {
+        lastItemOfClickedRow = Math.ceil((index + 1) / 6) * 6 - 1;
+      }
+      lastItemOfClickedRow =
+        lastItemOfClickedRow > totalImages - 1 ? totalImages - 1 : lastItemOfClickedRow;
+
+      console.log(lastItemOfClickedRow);
+
+      addNewDiv(lastItemOfClickedRow); // add new div below the clicked image
+    };
   }
 
   render() {
@@ -41,7 +116,15 @@ class App extends Component {
       console.log(data);
       data = this.state.data.map((item, index) => {
         return (
-          <Col sm={4} md={3} lg={2} key={index} className="img-box">
+          <Col
+            id={'img-box-' + index}
+            sm={4}
+            md={3}
+            lg={2}
+            key={index}
+            className="img-box"
+            onClick={() => this.openImageHandler(index)}
+          >
             <span className="cursor-pointer">
               <img src={item.image.thumbnailLink} />
             </span>
@@ -61,7 +144,7 @@ class App extends Component {
             <img className="search-icon" src={searchIcon} width="30" height="30" />
           </Col>
         </Row>
-        <Row>{data}</Row>
+        <Row id="all-image-holder">{data}</Row>
       </div>
     );
   }
