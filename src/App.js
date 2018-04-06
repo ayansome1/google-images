@@ -5,8 +5,16 @@ import './App.css';
 // import zefoStyle from './styles/zefo.css';
 import searchIcon from './images/search.svg';
 import { Bootstrap, Grid, Row, Col } from 'react-bootstrap';
+import axios from 'axios';
 
 class App extends Component {
+  componentDidMount() {
+    axios.get('http://www.mocky.io/v2/5ac7724f3100005700a574ed').then(res => {
+      // this.setState({ persons });
+      console.log(res.data);
+    });
+  }
+
   render() {
     return (
       <div className="padding-20">
