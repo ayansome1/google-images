@@ -23,7 +23,7 @@ class App extends Component {
         console.log(res.data);
         this.setState({
           loading: false,
-          data: res.data.items
+          data: res.data.items,
         });
         // this.state.loading = false;
       })
@@ -41,9 +41,11 @@ class App extends Component {
       console.log(data);
       data = this.state.data.map((item, index) => {
         return (
-          <span key={index} className="img-box cursor-pointer">
-            <img src={item.image.thumbnailLink} />
-          </span>
+          <Col sm={4} md={3} lg={2} key={index} className="img-box">
+            <span className="cursor-pointer">
+              <img src={item.image.thumbnailLink} />
+            </span>
+          </Col>
         );
         // return <img sm={3} key={index} className="img-box cursor-pointer" src={item.image.thumbnailLink} />;
       });
@@ -59,8 +61,7 @@ class App extends Component {
             <img className="search-icon" src={searchIcon} width="30" height="30" />
           </Col>
         </Row>
-
-        {data}
+        <Row>{data}</Row>
       </div>
     );
   }
