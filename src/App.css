@@ -344,3 +344,7 @@
 .search-icon {
   cursor: pointer;
 }
+
+.img-box {
+    padding: 10px;
+}
