@@ -4,6 +4,7 @@ import './App.css';
 // import './styles/bootstrap.min.css';
 // import zefoStyle from './styles/zefo.css';
 import searchIcon from './images/search.svg';
+import prevIcon from './images/prev_icon.svg';
 import { Bootstrap, Grid, Row, Col } from 'react-bootstrap';
 import axios from 'axios';
 
@@ -67,7 +68,17 @@ class App extends Component {
       newNode.style['background-color'] = '#dee2e6';
       newNode.style.padding = '20px';
 
-      newNode.innerHTML = "<img src='" + item.link + '\' style="max-width:100%;max-height:300px;">';
+      // newNode.innerHTML = "<img " + src={prevIcon} + "style='width:40px;height:40px;'>";
+
+      newNode.innerHTML = '<i class="left"></i>';
+        // '<img className="" src="https://cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/svgs/fi-arrow-left.svg" width="30px" height="30px" />';
+
+      // <img className="search-icon" src={searchIcon} width="30" height="30" />
+
+      newNode.innerHTML +=
+        "<img src='" + item.link + '\' style="max-width:100%;max-height:300px;">';
+      newNode.innerHTML += '<i class="right"></i>';
+
       referenceNode.after(newNode);
       // newNode.scrollIntoView();
     }
@@ -137,7 +148,7 @@ class App extends Component {
             <input type="text" className="form-control" />
           </Col>
           <Col sm={5}>
-            <img className="search-icon" src={searchIcon} width="30" height="30" />
+            <img className="search-icon" src={searchIcon} width="30px" height="30px" />
           </Col>
         </Row>
         <Row id="all-image-holder">{data}</Row>
