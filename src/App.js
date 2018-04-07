@@ -69,6 +69,7 @@ class App extends Component {
 
       newNode.innerHTML = "<img src='" + item.link + '\' style="max-width:100%;max-height:300px;">';
       referenceNode.after(newNode);
+      // newNode.scrollIntoView();
     }
 
     let openImage = (index, item) => {
