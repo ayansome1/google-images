@@ -70,14 +70,19 @@ class App extends Component {
 
       // newNode.innerHTML = "<img " + src={prevIcon} + "style='width:40px;height:40px;'>";
 
-      newNode.innerHTML = '<i class="left"></i>';
-        // '<img className="" src="https://cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/svgs/fi-arrow-left.svg" width="30px" height="30px" />';
+      newNode.innerHTML =
+        '<i class="left cursor-pointer" style="position: absolute;left: 30px;"></i>';
+
+      //   position: absolute;
+      // left: 30px;
+      // '<img className="" src="https://cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/svgs/fi-arrow-left.svg" width="30px" height="30px" />';
 
       // <img className="search-icon" src={searchIcon} width="30" height="30" />
 
       newNode.innerHTML +=
         "<img src='" + item.link + '\' style="max-width:100%;max-height:300px;">';
-      newNode.innerHTML += '<i class="right"></i>';
+      newNode.innerHTML +=
+        '<i class="right cursor-pointer" style="position: absolute;right: 30px;"></i>';
 
       referenceNode.after(newNode);
       // newNode.scrollIntoView();
