@@ -68,7 +68,7 @@ class App extends Component {
       referenceNode.after(newNode);
     }
 
-    this.openImageHandler = (index, item) => {
+    let openImage = (index, item) => {
       console.log('clicked', index, ' item: ', item);
 
       var allImageHolder = document.getElementById('all-image-holder');
@@ -95,6 +95,10 @@ class App extends Component {
       console.log(lastItemOfClickedRow);
 
       addNewDiv(lastItemOfClickedRow, item, index); // add new div below the clicked image
+    };
+
+    this.openImageHandler = (index, item) => {
+      openImage(index, item);
     };
   }
 
