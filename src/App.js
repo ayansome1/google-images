@@ -36,7 +36,7 @@ class App extends Component {
       return elem.parentNode.removeChild(elem);
     }
 
-    function addNewDiv(index) {
+    function addNewDiv(index, item) {
       // implement it on page refresh
       var referenceNode = document.getElementById('img-box-' + index);
 
@@ -58,8 +58,14 @@ class App extends Component {
       var newNode = document.createElement('div');
       newNode.id = 'img-box-after-' + index;
       newNode.className = 'image-open-details col-sm-12';
-      newNode.innerHTML = 'This will contain the image details';
+      newNode.style.display = 'flex';
+      newNode.style['align-items'] = 'center';
+      newNode.style['justify-content'] = 'center';
 
+      // display: flex;
+      // align-items: center;
+      // justify-content: center;
+      newNode.innerHTML = "<img src='" + item.link + '\' style="max-width:100%;max-height:300px;">';
       // Get the reference node
       // var referenceNode = document.getElementById('img-box-' + index);
 
@@ -77,8 +83,8 @@ class App extends Component {
 
     // addNewDiv();
 
-    this.openImageHandler = index => {
-      console.log('clicked', index);
+    this.openImageHandler = (index, item) => {
+      console.log('clicked', index, ' item: ', item);
 
       var allImageHolder = document.getElementById('all-image-holder');
 
@@ -103,7 +109,7 @@ class App extends Component {
 
       console.log(lastItemOfClickedRow);
 
-      addNewDiv(lastItemOfClickedRow); // add new div below the clicked image
+      addNewDiv(lastItemOfClickedRow, item); // add new div below the clicked image
     };
   }
 
@@ -123,7 +129,7 @@ class App extends Component {
             lg={2}
             key={index}
             className="img-box"
-            onClick={() => this.openImageHandler(index)}
+            onClick={() => this.openImageHandler(index, item)}
           >
             <span className="cursor-pointer">
               <img src={item.image.thumbnailLink} />
