@@ -42,17 +42,9 @@ class App extends Component {
 
       var x = document.getElementsByClassName('image-open-details');
       console.log(x);
-      // let foundExistingImageDetailsDiv = false;
       for (let i = 0; i < x.length; i++) {
-        // if (x[i].id === 'img-box-after-' + index) {
-        //   foundExistingImageDetailsDiv = true;
-        // }
         removeDiv(x[i].id);
-        // x[i].value = element.value;
       }
-      // if (foundExistingImageDetailsDiv) {
-      //   return;
-      // }
 
       // Create a new element
       var newNode = document.createElement('div');
@@ -61,27 +53,9 @@ class App extends Component {
       newNode.style.display = 'flex';
       newNode.style['align-items'] = 'center';
       newNode.style['justify-content'] = 'center';
-
-      // display: flex;
-      // align-items: center;
-      // justify-content: center;
       newNode.innerHTML = "<img src='" + item.link + '\' style="max-width:100%;max-height:300px;">';
-      // Get the reference node
-      // var referenceNode = document.getElementById('img-box-' + index);
-
-      // Insert the new node before the reference node
       referenceNode.after(newNode);
-
-      // var newDiv = document.createElement('div');
-      // var label = document.createTextNode(' - new div - ');
-      // var element = document.getElementById('img-box-' + index);
-      // var uploaderDiv = elements[0];
-
-      // newDiv.appendChild(label);
-      // element.insertBefore(newDiv, uploaderDiv.children[0]);
     }
-
-    // addNewDiv();
 
     this.openImageHandler = (index, item) => {
       console.log('clicked', index, ' item: ', item);
@@ -136,7 +110,6 @@ class App extends Component {
             </span>
           </Col>
         );
-        // return <img sm={3} key={index} className="img-box cursor-pointer" src={item.image.thumbnailLink} />;
       });
     }
 
