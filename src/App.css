@@ -350,6 +350,13 @@
     display: inline-block;
 }
 
+.image-fit {
+    /*object-fit: cover;*/
+    width: 100%;
+    /*height: 100%;*/
+    /*overflow: hidden;*/
+}
+
 /*@media screen and (min-width: 992px){
   .img-box:nth-child(6n) {
         background: blue;

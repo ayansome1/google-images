@@ -120,12 +120,10 @@ class App extends Component {
             md={3}
             lg={2}
             key={index}
-            className="img-box"
+            className="img-box cursor-pointer"
             onClick={() => this.openImageHandler(index, item)}
           >
-            <span className="cursor-pointer">
-              <img src={item.image.thumbnailLink} />
-            </span>
+            <img src={item.image.thumbnailLink} className="image-fit" />
           </Col>
         );
       });
