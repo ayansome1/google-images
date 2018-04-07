@@ -64,6 +64,9 @@ class App extends Component {
       newNode.style.display = 'flex';
       newNode.style['align-items'] = 'center';
       newNode.style['justify-content'] = 'center';
+      newNode.style['background-color'] = '#dee2e6';
+      newNode.style.padding = '20px';
+
       newNode.innerHTML = "<img src='" + item.link + '\' style="max-width:100%;max-height:300px;">';
       referenceNode.after(newNode);
     }
