@@ -36,19 +36,30 @@ class App extends Component {
       return elem.parentNode.removeChild(elem);
     }
 
-    function addNewDiv(index, item) {
+    function addNewDiv(index, item, clickedItemIndex) {
       // implement it on page refresh
       var referenceNode = document.getElementById('img-box-' + index);
 
-      var x = document.getElementsByClassName('image-open-details');
-      console.log(x);
-      for (let i = 0; i < x.length; i++) {
-        removeDiv(x[i].id);
+      // hide image if clicked again
+      var x = document.getElementById('img-box-for-' + clickedItemIndex);
+      if (x) {
+        console.log(x.id);
+        removeDiv(x.id);
+        return;
       }
 
-      // Create a new element
+      // remove existing opened image
+      var y = document.getElementsByClassName('image-open-details');
+      if (y[0]) {
+        removeDiv(y[0].id);
+      }
+      // for (let i = 0; i < y.length; i++) {
+      //   removeDiv(y[i].id);
+      // }
+
+      // Create div for new image opened
       var newNode = document.createElement('div');
-      newNode.id = 'img-box-after-' + index;
+      newNode.id = 'img-box-for-' + clickedItemIndex;
       newNode.className = 'image-open-details col-sm-12';
       newNode.style.display = 'flex';
       newNode.style['align-items'] = 'center';
@@ -83,7 +94,7 @@ class App extends Component {
 
       console.log(lastItemOfClickedRow);
 
-      addNewDiv(lastItemOfClickedRow, item); // add new div below the clicked image
+      addNewDiv(lastItemOfClickedRow, item, index); // add new div below the clicked image
     };
   }
 
