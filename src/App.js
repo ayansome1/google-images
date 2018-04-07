@@ -42,17 +42,17 @@ class App extends Component {
 
       var x = document.getElementsByClassName('image-open-details');
       console.log(x);
-      let foundExistingImageDetailsDiv = false;
+      // let foundExistingImageDetailsDiv = false;
       for (let i = 0; i < x.length; i++) {
-        if (x[i].id === 'img-box-after-' + index) {
-          foundExistingImageDetailsDiv = true;
-        }
+        // if (x[i].id === 'img-box-after-' + index) {
+        //   foundExistingImageDetailsDiv = true;
+        // }
         removeDiv(x[i].id);
         // x[i].value = element.value;
       }
-      if (foundExistingImageDetailsDiv) {
-        return;
-      }
+      // if (foundExistingImageDetailsDiv) {
+      //   return;
+      // }
 
       // Create a new element
       var newNode = document.createElement('div');
