@@ -151,6 +151,16 @@ class App extends Component {
     this.openImage(index, item);
   }
 
+  searchImages() {
+    console.log('clicked');
+  }
+
+  handleInputChange(e) {
+    this.setState({ word: e.target.value });
+    console.log(this.state.word);
+    // this.setState({ value: e.target.value });
+  }
+
   render() {
     let data;
     if (this.state.loading === true) {
@@ -178,10 +188,20 @@ class App extends Component {
       <div className="padding-20">
         <Row>
           <Col sm={7}>
-            <input type="text" className="form-control" />
+            <input
+              type="text"
+              className="form-control"
+              onChange={this.handleInputChange.bind(this)}
+            />
           </Col>
           <Col sm={5}>
-            <img className="search-icon" src={searchIcon} width="30px" height="30px" />
+            <img
+              className="search-icon"
+              src={searchIcon}
+              width="30px"
+              height="30px"
+              onClick={this.searchImages}
+            />
           </Col>
         </Row>
         <Row id="all-image-holder">{data}</Row>
