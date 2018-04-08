@@ -5,36 +5,48 @@ import searchIcon from './images/search.svg';
 import prevIcon from './images/prev_icon.svg';
 import { Bootstrap, Grid, Row, Col } from 'react-bootstrap';
 import axios from 'axios';
+let num = 10;
 
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { loading: true };
+    this.state = { loading: true, start: 1 };
     this.addNewDiv = this.addNewDiv.bind(this);
     this.openImage = this.openImage.bind(this);
+    this.getImages = this.getImages.bind(this);
+    this.searchImages = this.searchImages.bind(this);
   }
 
   componentDidMount() {
-    this.getImages();
-
+    // this.getImages();
     // this.openImage();
-
     // this.openImageHandler = (index, item) => {
     //   openImage(index, item);
     // };
   }
 
-  getImages() {
+  getImages(word, start, num) {
+    console.log(word, start, num);
+
+    let url =
+      'https://www.googleapis.com/customsearch/v1?key=AIzaSyDb5J1g2o1PXmOQTgdRX4sYWcCUfXup2iU&cx=006532907512921989364:ybctrnxiwza&searchType=image';
+    url = url + '&q=' + word;
+    url = url + '&start=' + start;
+    url = url + '&num=' + num;
+
+    console.log(url);
+
     axios
-      .get('http://www.mocky.io/v2/5ac7724f3100005700a574ed')
+      .get(url)
       .then(res => {
         console.log(res.data);
         this.setState(
           {
             loading: false,
-            data: res.data.items,
+            data: res.data.items, // this.state.data.push(...res.data.items),
             firstItemIndex: 0,
             lastItemIndex: res.data.items.length - 1,
+            start: this.state.start + num,
           },
           () => {
             // to retain expanding image preview on page refresh
@@ -152,12 +164,13 @@ class App extends Component {
   }
 
   searchImages() {
+    this.getImages(this.state.word, this.state.start, num);
     console.log('clicked');
   }
 
   handleInputChange(e) {
     this.setState({ word: e.target.value });
-    console.log(this.state.word);
+    // console.log(e.target.value);
     // this.setState({ value: e.target.value });
   }
 
