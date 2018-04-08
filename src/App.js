@@ -1,37 +1,44 @@
 import React, { Component } from 'react';
 // import logo from './logo.svg';
 import './App.css';
-// import './styles/bootstrap.min.css';
-// import zefoStyle from './styles/zefo.css';
 import searchIcon from './images/search.svg';
 import prevIcon from './images/prev_icon.svg';
 import { Bootstrap, Grid, Row, Col } from 'react-bootstrap';
 import axios from 'axios';
-import InfiniteScroll from 'react-infinite-scroller';
-
 
 class App extends Component {
-  // this.state = { loading: true };
-
   constructor(props) {
     super(props);
     this.state = { loading: true };
   }
 
   componentDidMount() {
-    // console.log(this.state);
     axios
       .get('http://www.mocky.io/v2/5ac7724f3100005700a574ed')
       .then(res => {
-        // this.setState({ persons });
         console.log(res.data);
-        this.setState({
-          loading: false,
-          data: res.data.items,
-          firstItemIndex: 0,
-          lastItemIndex: res.data.items.length - 1,
-        });
-        // this.state.loading = false;
+        this.setState(
+          {
+            loading: false,
+            data: res.data.items,
+            firstItemIndex: 0,
+            lastItemIndex: res.data.items.length - 1,
+          },
+          () => {
+            let items = this.state.data;
+
+            for (let it in items) {
+              if (
+                items[it].link === window.sessionStorage.getItem('link') &&
+                items[it].image.thumbnailLink === window.sessionStorage.getItem('thumbnailLink')
+              ) {
+                openImage(parseInt(it), items[it]);
+
+                break;
+              }
+            }
+          }
+        );
       })
       .catch(err => {
         console.log('error in getting image', err);
@@ -43,7 +50,6 @@ class App extends Component {
     }
 
     var addNewDiv = (index, item, clickedItemIndex) => {
-      // implement it on page refresh
       var referenceNode = document.getElementById('img-box-' + index);
 
       // hide image if clicked again
@@ -59,9 +65,6 @@ class App extends Component {
       if (y[0]) {
         removeDiv(y[0].id);
       }
-      // for (let i = 0; i < y.length; i++) {
-      //   removeDiv(y[i].id);
-      // }
 
       // Create div for new image opened
       var newNode = document.createElement('div');
@@ -73,16 +76,8 @@ class App extends Component {
       newNode.style['background-color'] = '#dee2e6';
       newNode.style.padding = '20px';
 
-      // newNode.innerHTML = "<img " + src={prevIcon} + "style='width:40px;height:40px;'>";
-
       newNode.innerHTML =
         '<i id="left-arrow" class="left cursor-pointer" style="position: absolute;left: 30px;"></i>';
-
-      //   position: absolute;
-      // left: 30px;
-      // '<img className="" src="https://cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/svgs/fi-arrow-left.svg" width="30px" height="30px" />';
-
-      // <img className="search-icon" src={searchIcon} width="30" height="30" />
 
       newNode.innerHTML +=
         "<img src='" + item.link + '\' style="max-width:100%;max-height:300px;">';
@@ -110,26 +105,18 @@ class App extends Component {
           openImage(this.state.openedImageId + 1, this.state.data[this.state.openedImageId + 1]);
         }
       };
-
-      // if (leftArrow) {
-      //   leftArrow.addEventListener('click', (e) => {
-      //     console.log('---', this.state);
-      //     // openImage(this.state.openedImageId, this.state.data[this.state.openedImageId - 1])
-      //   });
-      // }
     };
 
     var openImage = (index, item) => {
-      console.log('clicked', index, ' item: ', item);
       this.setState({ openedImageId: index });
+      window.sessionStorage.setItem('link', item.link);
+      window.sessionStorage.setItem('thumbnailLink', item.image.thumbnailLink);
 
       var allImageHolder = document.getElementById('all-image-holder');
 
       var allImageItems = allImageHolder.getElementsByClassName('img-box');
       let totalImages = allImageItems.length;
       let lastItemOfClickedRow;
-
-      console.log(window.innerWidth);
 
       let windowWidth = window.innerWidth;
       if (windowWidth <= 575) {
@@ -144,28 +131,12 @@ class App extends Component {
       lastItemOfClickedRow =
         lastItemOfClickedRow > totalImages - 1 ? totalImages - 1 : lastItemOfClickedRow;
 
-      console.log(lastItemOfClickedRow);
-
       addNewDiv(lastItemOfClickedRow, item, index); // add new div below the clicked image
     };
 
     this.openImageHandler = (index, item) => {
       openImage(index, item);
     };
-
-    // let leftArrow = document.getElementById('left-arrow');
-    // leftArrow.onclick = () => {
-    //   openImage(this.state.openedImageId, this.state.data[this.state.openedImageId - 1])
-    // };
-
-    // openedImageId
-    // let leftArrow = document.getElementById('left-arrow');
-
-    // if (leftArrow) {
-    //   leftArrow.addEventListener('click', function(e) {
-    //     console.log('---');
-    //   });
-    // }
   }
 
   render() {
@@ -174,7 +145,6 @@ class App extends Component {
       console.log(data);
       data = <div>Loading...</div>;
     } else {
-      console.log(data);
       data = this.state.data.map((item, index) => {
         return (
           <Col
@@ -191,11 +161,6 @@ class App extends Component {
         );
       });
     }
-
-    // let leftArrow = document.getElementById('left-arrow');
-    // leftArrow.onclick = () => {
-    //   this.openImage(this.state.openedImageId, this.state.data[this.state.openedImageId - 1]);
-    // };
 
     return (
       <div className="padding-20">
