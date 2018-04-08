@@ -17,6 +17,7 @@ class App extends Component {
   }
 
   componentDidMount() {
+    // console.log(this.state);
     axios
       .get('http://www.mocky.io/v2/5ac7724f3100005700a574ed')
       .then(res => {
@@ -25,6 +26,8 @@ class App extends Component {
         this.setState({
           loading: false,
           data: res.data.items,
+          firstItemIndex: 0,
+          lastItemIndex: res.data.items.length - 1,
         });
         // this.state.loading = false;
       })
@@ -37,7 +40,7 @@ class App extends Component {
       return elem.parentNode.removeChild(elem);
     }
 
-    function addNewDiv(index, item, clickedItemIndex) {
+    var addNewDiv = (index, item, clickedItemIndex) => {
       // implement it on page refresh
       var referenceNode = document.getElementById('img-box-' + index);
 
@@ -71,7 +74,7 @@ class App extends Component {
       // newNode.innerHTML = "<img " + src={prevIcon} + "style='width:40px;height:40px;'>";
 
       newNode.innerHTML =
-        '<i class="left cursor-pointer" style="position: absolute;left: 30px;"></i>';
+        '<i id="left-arrow" class="left cursor-pointer" style="position: absolute;left: 30px;"></i>';
 
       //   position: absolute;
       // left: 30px;
@@ -82,14 +85,41 @@ class App extends Component {
       newNode.innerHTML +=
         "<img src='" + item.link + '\' style="max-width:100%;max-height:300px;">';
       newNode.innerHTML +=
-        '<i class="right cursor-pointer" style="position: absolute;right: 30px;"></i>';
+        '<i id="right-arrow" class="right cursor-pointer" style="position: absolute;right: 30px;"></i>';
 
       referenceNode.after(newNode);
       // newNode.scrollIntoView();
-    }
+      let leftArrow = document.getElementById('left-arrow');
+      leftArrow.onclick = () => {
+        console.log('---', this.state);
+        console.log(this.state.openedImageId - 1, this.state.data[this.state.openedImageId - 1]);
 
-    let openImage = (index, item) => {
+        if (this.state.openedImageId - 1 >= this.state.firstItemIndex) {
+          openImage(this.state.openedImageId - 1, this.state.data[this.state.openedImageId - 1]);
+        }
+      };
+
+      let rightArrow = document.getElementById('right-arrow');
+      rightArrow.onclick = () => {
+        console.log('---', this.state);
+        console.log(this.state.openedImageId + 1, this.state.data[this.state.openedImageId + 1]);
+
+        if (this.state.openedImageId + 1 <= this.state.lastItemIndex) {
+          openImage(this.state.openedImageId + 1, this.state.data[this.state.openedImageId + 1]);
+        }
+      };
+
+      // if (leftArrow) {
+      //   leftArrow.addEventListener('click', (e) => {
+      //     console.log('---', this.state);
+      //     // openImage(this.state.openedImageId, this.state.data[this.state.openedImageId - 1])
+      //   });
+      // }
+    };
+
+    var openImage = (index, item) => {
       console.log('clicked', index, ' item: ', item);
+      this.setState({ openedImageId: index });
 
       var allImageHolder = document.getElementById('all-image-holder');
 
@@ -120,6 +150,20 @@ class App extends Component {
     this.openImageHandler = (index, item) => {
       openImage(index, item);
     };
+
+    // let leftArrow = document.getElementById('left-arrow');
+    // leftArrow.onclick = () => {
+    //   openImage(this.state.openedImageId, this.state.data[this.state.openedImageId - 1])
+    // };
+
+    // openedImageId
+    // let leftArrow = document.getElementById('left-arrow');
+
+    // if (leftArrow) {
+    //   leftArrow.addEventListener('click', function(e) {
+    //     console.log('---');
+    //   });
+    // }
   }
 
   render() {
@@ -145,6 +189,11 @@ class App extends Component {
         );
       });
     }
+
+    // let leftArrow = document.getElementById('left-arrow');
+    // leftArrow.onclick = () => {
+    //   this.openImage(this.state.openedImageId, this.state.data[this.state.openedImageId - 1]);
+    // };
 
     return (
       <div className="padding-20">
