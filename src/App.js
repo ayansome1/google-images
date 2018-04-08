@@ -13,36 +13,41 @@ class App extends Component {
   }
 
   componentDidMount() {
-    axios
-      .get('http://www.mocky.io/v2/5ac7724f3100005700a574ed')
-      .then(res => {
-        console.log(res.data);
-        this.setState(
-          {
-            loading: false,
-            data: res.data.items,
-            firstItemIndex: 0,
-            lastItemIndex: res.data.items.length - 1,
-          },
-          () => {
-            let items = this.state.data;
+    let getImages = () => {
+      axios
+        .get('http://www.mocky.io/v2/5ac7724f3100005700a574ed')
+        .then(res => {
+          console.log(res.data);
+          this.setState(
+            {
+              loading: false,
+              data: res.data.items,
+              firstItemIndex: 0,
+              lastItemIndex: res.data.items.length - 1,
+            },
+            () => {
+              // to retain expanding image preview on page refresh
+              let items = this.state.data;
 
-            for (let it in items) {
-              if (
-                items[it].link === window.sessionStorage.getItem('link') &&
-                items[it].image.thumbnailLink === window.sessionStorage.getItem('thumbnailLink')
-              ) {
-                openImage(parseInt(it), items[it]);
+              for (let it in items) {
+                if (
+                  items[it].link === window.sessionStorage.getItem('link') &&
+                  items[it].image.thumbnailLink === window.sessionStorage.getItem('thumbnailLink')
+                ) {
+                  openImage(parseInt(it), items[it]);
 
-                break;
+                  break;
+                }
               }
             }
-          }
-        );
-      })
-      .catch(err => {
-        console.log('error in getting image', err);
-      });
+          );
+        })
+        .catch(err => {
+          console.log('error in getting image', err);
+        });
+    };
+
+    getImages();
 
     function removeDiv(id) {
       var elem = document.getElementById(id);
