@@ -10,138 +10,145 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = { loading: true };
+    this.addNewDiv = this.addNewDiv.bind(this);
+    this.openImage = this.openImage.bind(this);
   }
 
   componentDidMount() {
-    let getImages = () => {
-      axios
-        .get('http://www.mocky.io/v2/5ac7724f3100005700a574ed')
-        .then(res => {
-          console.log(res.data);
-          this.setState(
-            {
-              loading: false,
-              data: res.data.items,
-              firstItemIndex: 0,
-              lastItemIndex: res.data.items.length - 1,
-            },
-            () => {
-              // to retain expanding image preview on page refresh
-              let items = this.state.data;
+    this.getImages();
 
-              for (let it in items) {
-                if (
-                  items[it].link === window.sessionStorage.getItem('link') &&
-                  items[it].image.thumbnailLink === window.sessionStorage.getItem('thumbnailLink')
-                ) {
-                  openImage(parseInt(it), items[it]);
+    // this.openImage();
 
-                  break;
-                }
+    // this.openImageHandler = (index, item) => {
+    //   openImage(index, item);
+    // };
+  }
+
+  getImages() {
+    axios
+      .get('http://www.mocky.io/v2/5ac7724f3100005700a574ed')
+      .then(res => {
+        console.log(res.data);
+        this.setState(
+          {
+            loading: false,
+            data: res.data.items,
+            firstItemIndex: 0,
+            lastItemIndex: res.data.items.length - 1,
+          },
+          () => {
+            // to retain expanding image preview on page refresh
+            let items = this.state.data;
+
+            for (let it in items) {
+              if (
+                items[it].link === window.sessionStorage.getItem('link') &&
+                items[it].image.thumbnailLink === window.sessionStorage.getItem('thumbnailLink')
+              ) {
+                this.openImage(parseInt(it), items[it]);
+
+                break;
               }
             }
-          );
-        })
-        .catch(err => {
-          console.log('error in getting image', err);
-        });
-    };
+          }
+        );
+      })
+      .catch(err => {
+        console.log('error in getting image', err);
+      });
+  }
 
-    getImages();
+  removeDiv(id) {
+    var elem = document.getElementById(id);
+    return elem.parentNode.removeChild(elem);
+  }
 
-    function removeDiv(id) {
-      var elem = document.getElementById(id);
-      return elem.parentNode.removeChild(elem);
+  addNewDiv(index, item, clickedItemIndex) {
+    var referenceNode = document.getElementById('img-box-' + index);
+
+    // hide image if clicked again
+    var x = document.getElementById('img-box-for-' + clickedItemIndex);
+    if (x) {
+      console.log(x.id);
+      this.removeDiv(x.id);
+      return;
     }
 
-    var addNewDiv = (index, item, clickedItemIndex) => {
-      var referenceNode = document.getElementById('img-box-' + index);
+    // remove existing opened image
+    var y = document.getElementsByClassName('image-open-details');
+    if (y[0]) {
+      this.removeDiv(y[0].id);
+    }
 
-      // hide image if clicked again
-      var x = document.getElementById('img-box-for-' + clickedItemIndex);
-      if (x) {
-        console.log(x.id);
-        removeDiv(x.id);
-        return;
+    // Create div for new image opened
+    var newNode = document.createElement('div');
+    newNode.id = 'img-box-for-' + clickedItemIndex;
+    newNode.className = 'image-open-details col-sm-12';
+    newNode.style.display = 'flex';
+    newNode.style['align-items'] = 'center';
+    newNode.style['justify-content'] = 'center';
+    newNode.style['background-color'] = '#dee2e6';
+    newNode.style.padding = '20px';
+
+    newNode.innerHTML =
+      '<i id="left-arrow" class="left cursor-pointer" style="position: absolute;left: 30px;"></i>';
+
+    newNode.innerHTML += "<img src='" + item.link + '\' style="max-width:100%;max-height:300px;">';
+    newNode.innerHTML +=
+      '<i id="right-arrow" class="right cursor-pointer" style="position: absolute;right: 30px;"></i>';
+
+    referenceNode.after(newNode);
+    // newNode.scrollIntoView();
+    let leftArrow = document.getElementById('left-arrow');
+    leftArrow.onclick = () => {
+      console.log('---', this.state);
+      console.log(this.state.openedImageId - 1, this.state.data[this.state.openedImageId - 1]);
+
+      if (this.state.openedImageId - 1 >= this.state.firstItemIndex) {
+        this.openImage(this.state.openedImageId - 1, this.state.data[this.state.openedImageId - 1]);
       }
-
-      // remove existing opened image
-      var y = document.getElementsByClassName('image-open-details');
-      if (y[0]) {
-        removeDiv(y[0].id);
-      }
-
-      // Create div for new image opened
-      var newNode = document.createElement('div');
-      newNode.id = 'img-box-for-' + clickedItemIndex;
-      newNode.className = 'image-open-details col-sm-12';
-      newNode.style.display = 'flex';
-      newNode.style['align-items'] = 'center';
-      newNode.style['justify-content'] = 'center';
-      newNode.style['background-color'] = '#dee2e6';
-      newNode.style.padding = '20px';
-
-      newNode.innerHTML =
-        '<i id="left-arrow" class="left cursor-pointer" style="position: absolute;left: 30px;"></i>';
-
-      newNode.innerHTML +=
-        "<img src='" + item.link + '\' style="max-width:100%;max-height:300px;">';
-      newNode.innerHTML +=
-        '<i id="right-arrow" class="right cursor-pointer" style="position: absolute;right: 30px;"></i>';
-
-      referenceNode.after(newNode);
-      // newNode.scrollIntoView();
-      let leftArrow = document.getElementById('left-arrow');
-      leftArrow.onclick = () => {
-        console.log('---', this.state);
-        console.log(this.state.openedImageId - 1, this.state.data[this.state.openedImageId - 1]);
-
-        if (this.state.openedImageId - 1 >= this.state.firstItemIndex) {
-          openImage(this.state.openedImageId - 1, this.state.data[this.state.openedImageId - 1]);
-        }
-      };
-
-      let rightArrow = document.getElementById('right-arrow');
-      rightArrow.onclick = () => {
-        console.log('---', this.state);
-        console.log(this.state.openedImageId + 1, this.state.data[this.state.openedImageId + 1]);
-
-        if (this.state.openedImageId + 1 <= this.state.lastItemIndex) {
-          openImage(this.state.openedImageId + 1, this.state.data[this.state.openedImageId + 1]);
-        }
-      };
     };
 
-    var openImage = (index, item) => {
-      this.setState({ openedImageId: index });
-      window.sessionStorage.setItem('link', item.link);
-      window.sessionStorage.setItem('thumbnailLink', item.image.thumbnailLink);
+    let rightArrow = document.getElementById('right-arrow');
+    rightArrow.onclick = () => {
+      console.log('---', this.state);
+      console.log(this.state.openedImageId + 1, this.state.data[this.state.openedImageId + 1]);
 
-      var allImageHolder = document.getElementById('all-image-holder');
-
-      var allImageItems = allImageHolder.getElementsByClassName('img-box');
-      let totalImages = allImageItems.length;
-      let lastItemOfClickedRow;
-
-      let windowWidth = window.innerWidth;
-      if (windowWidth <= 575) {
-        lastItemOfClickedRow = index;
-      } else if (windowWidth <= 767) {
-        lastItemOfClickedRow = Math.ceil((index + 1) / 3) * 3 - 1;
-      } else if (windowWidth <= 991) {
-        lastItemOfClickedRow = Math.ceil((index + 1) / 4) * 4 - 1;
-      } else {
-        lastItemOfClickedRow = Math.ceil((index + 1) / 6) * 6 - 1;
+      if (this.state.openedImageId + 1 <= this.state.lastItemIndex) {
+        this.openImage(this.state.openedImageId + 1, this.state.data[this.state.openedImageId + 1]);
       }
-      lastItemOfClickedRow =
-        lastItemOfClickedRow > totalImages - 1 ? totalImages - 1 : lastItemOfClickedRow;
-
-      addNewDiv(lastItemOfClickedRow, item, index); // add new div below the clicked image
     };
+  }
 
-    this.openImageHandler = (index, item) => {
-      openImage(index, item);
-    };
+  openImage(index, item) {
+    this.setState({ openedImageId: index });
+    window.sessionStorage.setItem('link', item.link);
+    window.sessionStorage.setItem('thumbnailLink', item.image.thumbnailLink);
+
+    var allImageHolder = document.getElementById('all-image-holder');
+
+    var allImageItems = allImageHolder.getElementsByClassName('img-box');
+    let totalImages = allImageItems.length;
+    let lastItemOfClickedRow;
+
+    let windowWidth = window.innerWidth;
+    if (windowWidth <= 575) {
+      lastItemOfClickedRow = index;
+    } else if (windowWidth <= 767) {
+      lastItemOfClickedRow = Math.ceil((index + 1) / 3) * 3 - 1;
+    } else if (windowWidth <= 991) {
+      lastItemOfClickedRow = Math.ceil((index + 1) / 4) * 4 - 1;
+    } else {
+      lastItemOfClickedRow = Math.ceil((index + 1) / 6) * 6 - 1;
+    }
+    lastItemOfClickedRow =
+      lastItemOfClickedRow > totalImages - 1 ? totalImages - 1 : lastItemOfClickedRow;
+
+    this.addNewDiv(lastItemOfClickedRow, item, index); // add new div below the clicked image
+  }
+
+  openImageHandler(index, item) {
+    this.openImage(index, item);
   }
 
   render() {
