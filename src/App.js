@@ -7,6 +7,8 @@ import searchIcon from './images/search.svg';
 import prevIcon from './images/prev_icon.svg';
 import { Bootstrap, Grid, Row, Col } from 'react-bootstrap';
 import axios from 'axios';
+import InfiniteScroll from 'react-infinite-scroller';
+
 
 class App extends Component {
   // this.state = { loading: true };
@@ -206,6 +208,9 @@ class App extends Component {
           </Col>
         </Row>
         <Row id="all-image-holder">{data}</Row>
+        <Row>
+          <button className="load-more">Load more </button>
+        </Row>
       </div>
     );
   }
