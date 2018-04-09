@@ -343,6 +343,13 @@
 
 .search-icon {
   cursor: pointer;
+  padding: 5px;
+  width:35px;
+  height:35px;
+  background-color: #e5e7ea; 
+  border: #476a90;
+  border-style: solid;
+  border-width: thin;
 }
 
 .img-box {

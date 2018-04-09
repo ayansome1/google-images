@@ -10,7 +10,7 @@ let num = 10;
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { loading: true, start: 1, searchedWord: '' };
+    this.state = { loading: true, start: 1, searchedWord: '', dataLoaded: false };
     this.addNewDiv = this.addNewDiv.bind(this);
     this.openImage = this.openImage.bind(this);
     this.getImages = this.getImages.bind(this);
@@ -22,12 +22,12 @@ class App extends Component {
     let lastSearchedWord = window.sessionStorage.getItem('lastSearchedWord');
 
     if (lastSearchedWord) {
-      this.getImages(lastSearchedWord);
+      // this.getImages(lastSearchedWord);
       this.setState({ word: lastSearchedWord });
 
       this.setState({ searchedWord: lastSearchedWord });
     }
-    // this.getImages();
+    this.getImages(lastSearchedWord);
     // this.openImage();
     // this.openImageHandler = (index, item) => {
     //   openImage(index, item);
@@ -58,6 +58,7 @@ class App extends Component {
             firstItemIndex: 0,
             lastItemIndex: res.data.items.length - 1,
             start: 1,
+            dataLoaded: true,
           },
           () => {
             if (!window.sessionStorage.getItem('link')) {
@@ -249,15 +250,21 @@ class App extends Component {
 
   handleInputChange(e) {
     this.setState({ word: e.target.value });
+    console.log(e.key);
+    if (e.keyCode === 13) {
+      this.searchImages();
+      // console.log('value', e.target.value);
+      // put the login here
+    }
     // console.log(e.target.value);
     // this.setState({ value: e.target.value });
   }
 
   render() {
-    let data;
+    let data, loadMore;
     if (this.state.loading === true) {
       console.log(data);
-      data = <div>Loading...</div>;
+      data = null; //<div>Loading...</div>;
     } else {
       data = this.state.data.map((item, index) => {
         return (
@@ -276,6 +283,16 @@ class App extends Component {
       });
     }
 
+    if (this.state.dataLoaded) {
+      loadMore = (
+        <Row>
+          <button className="load-more" onClick={this.loadMore}>
+            Load more{' '}
+          </button>
+        </Row>
+      );
+    }
+
     return (
       <div className="padding-20">
         <Row>
@@ -283,26 +300,21 @@ class App extends Component {
             <input
               value={this.state.word}
               type="text"
-              className="form-control"
+              className="form-control margin-bottom-10"
+              onKeyPress={event => {
+                if (event.key === 'Enter') {
+                  this.searchImages();
+                }
+              }}
               onChange={this.handleInputChange.bind(this)}
             />
           </Col>
           <Col sm={5}>
-            <img
-              className="search-icon"
-              src={searchIcon}
-              width="30px"
-              height="30px"
-              onClick={this.searchImages}
-            />
+            <img className="search-icon" onClick={this.searchImages} src={searchIcon} />
           </Col>
         </Row>
         <Row id="all-image-holder">{data}</Row>
-        <Row>
-          <button className="load-more" onClick={this.loadMore}>
-            Load more{' '}
-          </button>
-        </Row>
+        {loadMore}
       </div>
     );
   }
