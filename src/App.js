@@ -35,12 +35,12 @@ class App extends Component {
   }
 
   getImages(word /* , start, num*/) {
-    console.log(word, this.state.start, num);
+    // console.log(word, this.state.start, num);
 
     let url =
       'https://www.googleapis.com/customsearch/v1?key=AIzaSyDb5J1g2o1PXmOQTgdRX4sYWcCUfXup2iU&cx=006532907512921989364:ybctrnxiwza&searchType=image';
     url = url + '&q=' + word;
-    url = url + '&start=' + this.state.start;
+    url = url + '&start=' + 1;
     url = url + '&num=' + num;
 
     console.log(url);
@@ -50,7 +50,7 @@ class App extends Component {
     axios
       .get(url)
       .then(res => {
-        console.log(res.data);
+        // console.log(res.data);
         this.setState(
           {
             loading: false,
@@ -75,7 +75,7 @@ class App extends Component {
                 items[it].link === window.sessionStorage.getItem('link') &&
                 items[it].image.thumbnailLink === window.sessionStorage.getItem('thumbnailLink')
               ) {
-                console.log('******FOUND*********');
+                // console.log('******FOUND*********');
                 this.openImage(parseInt(it), items[it]);
 
                 break;
@@ -104,7 +104,7 @@ class App extends Component {
     axios
       .get(url)
       .then(res => {
-        console.log(res.data);
+        // console.log(res.data);
 
         let newLastItemIndex = this.state.lastItemIndex + res.data.items.length;
 
@@ -152,7 +152,7 @@ class App extends Component {
     // hide image if clicked again
     var x = document.getElementById('img-box-for-' + clickedItemIndex);
     if (x) {
-      console.log(x.id);
+      // console.log(x.id);
       this.removeDiv(x.id);
       return;
     }
@@ -184,8 +184,8 @@ class App extends Component {
     // newNode.scrollIntoView();
     let leftArrow = document.getElementById('left-arrow');
     leftArrow.onclick = () => {
-      console.log('---', this.state);
-      console.log(this.state.openedImageId - 1, this.state.data[this.state.openedImageId - 1]);
+      // console.log('---', this.state);
+      // console.log(this.state.openedImageId - 1, this.state.data[this.state.openedImageId - 1]);
 
       if (this.state.openedImageId - 1 >= this.state.firstItemIndex) {
         this.openImage(this.state.openedImageId - 1, this.state.data[this.state.openedImageId - 1]);
@@ -194,8 +194,8 @@ class App extends Component {
 
     let rightArrow = document.getElementById('right-arrow');
     rightArrow.onclick = () => {
-      console.log('---', this.state);
-      console.log(this.state.openedImageId + 1, this.state.data[this.state.openedImageId + 1]);
+      // console.log('---', this.state);
+      // console.log(this.state.openedImageId + 1, this.state.data[this.state.openedImageId + 1]);
 
       if (this.state.openedImageId + 1 <= this.state.lastItemIndex) {
         this.openImage(this.state.openedImageId + 1, this.state.data[this.state.openedImageId + 1]);
@@ -237,11 +237,11 @@ class App extends Component {
 
   searchImages() {
     window.sessionStorage.removeItem('link');
-    console.log(window.sessionStorage.getItem('link'));
+    // console.log(window.sessionStorage.getItem('link'));
     window.sessionStorage.removeItem('thumbnailLink');
     this.setState({ searchedWord: this.state.word });
     this.getImages(this.state.word /*, this.state.start, num*/);
-    console.log('clicked');
+    // console.log('clicked');
 
     // window.sessionStorage.removeItem('lastSearchedWord');
 
@@ -250,12 +250,12 @@ class App extends Component {
 
   handleInputChange(e) {
     this.setState({ word: e.target.value });
-    console.log(e.key);
-    if (e.keyCode === 13) {
-      this.searchImages();
-      // console.log('value', e.target.value);
-      // put the login here
-    }
+    // console.log(e.key);
+    // if (e.keyCode === 13) {
+    //   this.searchImages();
+    //   // console.log('value', e.target.value);
+    //   // put the login here
+    // }
     // console.log(e.target.value);
     // this.setState({ value: e.target.value });
   }
@@ -263,7 +263,7 @@ class App extends Component {
   render() {
     let data, loadMore;
     if (this.state.loading === true) {
-      console.log(data);
+      // console.log(data);
       data = null; //<div>Loading...</div>;
     } else {
       data = this.state.data.map((item, index) => {
