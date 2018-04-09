@@ -10,14 +10,23 @@ let num = 10;
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { loading: true, start: 1 };
+    this.state = { loading: true, start: 1, searchedWord: '' };
     this.addNewDiv = this.addNewDiv.bind(this);
     this.openImage = this.openImage.bind(this);
     this.getImages = this.getImages.bind(this);
     this.searchImages = this.searchImages.bind(this);
+    this.loadMore = this.loadMore.bind(this);
   }
 
   componentDidMount() {
+    let lastSearchedWord = window.sessionStorage.getItem('lastSearchedWord');
+
+    if (lastSearchedWord) {
+      this.getImages(lastSearchedWord);
+      this.setState({ word: lastSearchedWord });
+
+      this.setState({ searchedWord: lastSearchedWord });
+    }
     // this.getImages();
     // this.openImage();
     // this.openImageHandler = (index, item) => {
@@ -25,16 +34,18 @@ class App extends Component {
     // };
   }
 
-  getImages(word, start, num) {
-    console.log(word, start, num);
+  getImages(word /* , start, num*/) {
+    console.log(word, this.state.start, num);
 
     let url =
       'https://www.googleapis.com/customsearch/v1?key=AIzaSyDb5J1g2o1PXmOQTgdRX4sYWcCUfXup2iU&cx=006532907512921989364:ybctrnxiwza&searchType=image';
     url = url + '&q=' + word;
-    url = url + '&start=' + start;
+    url = url + '&start=' + this.state.start;
     url = url + '&num=' + num;
 
     console.log(url);
+
+    // let newStart = this.state.start + num;
 
     axios
       .get(url)
@@ -46,8 +57,67 @@ class App extends Component {
             data: res.data.items, // this.state.data.push(...res.data.items),
             firstItemIndex: 0,
             lastItemIndex: res.data.items.length - 1,
-            start: this.state.start + num,
+            start: 1,
           },
+          () => {
+            if (!window.sessionStorage.getItem('link')) {
+              var y = document.getElementsByClassName('image-open-details');
+              if (y[0]) {
+                this.removeDiv(y[0].id);
+              }
+            }
+            // to retain expanding image preview on page refresh
+            let items = this.state.data;
+
+            for (let it in items) {
+              if (
+                items[it].link === window.sessionStorage.getItem('link') &&
+                items[it].image.thumbnailLink === window.sessionStorage.getItem('thumbnailLink')
+              ) {
+                console.log('******FOUND*********');
+                this.openImage(parseInt(it), items[it]);
+
+                break;
+              }
+            }
+          }
+        );
+      })
+      .catch(err => {
+        console.log('error in getting image', err);
+      });
+  }
+
+  loadMore() {
+    let url =
+      'https://www.googleapis.com/customsearch/v1?key=AIzaSyDb5J1g2o1PXmOQTgdRX4sYWcCUfXup2iU&cx=006532907512921989364:ybctrnxiwza&searchType=image';
+
+    let newStart = this.state.start + num;
+
+    url = url + '&q=' + this.state.searchedWord;
+    url = url + '&start=' + newStart;
+    url = url + '&num=' + num;
+
+    console.log(url);
+
+    axios
+      .get(url)
+      .then(res => {
+        console.log(res.data);
+
+        let newLastItemIndex = this.state.lastItemIndex + res.data.items.length;
+
+        let newData = this.state.data;
+        newData.push(...res.data.items);
+
+        this.setState(
+          {
+            // loading: false,
+            data: newData, // this.state.data.push(...res.data.items),
+            // firstItemIndex: 0,
+            lastItemIndex: newLastItemIndex,
+            start: newStart,
+          } /* ,
           () => {
             // to retain expanding image preview on page refresh
             let items = this.state.data;
@@ -62,7 +132,7 @@ class App extends Component {
                 break;
               }
             }
-          }
+          } */
         );
       })
       .catch(err => {
@@ -136,6 +206,7 @@ class App extends Component {
     this.setState({ openedImageId: index });
     window.sessionStorage.setItem('link', item.link);
     window.sessionStorage.setItem('thumbnailLink', item.image.thumbnailLink);
+    // window.sessionStorage.setItem('lastSearchedWord', this.state.searchedWord);
 
     var allImageHolder = document.getElementById('all-image-holder');
 
@@ -164,8 +235,16 @@ class App extends Component {
   }
 
   searchImages() {
-    this.getImages(this.state.word, this.state.start, num);
+    window.sessionStorage.removeItem('link');
+    console.log(window.sessionStorage.getItem('link'));
+    window.sessionStorage.removeItem('thumbnailLink');
+    this.setState({ searchedWord: this.state.word });
+    this.getImages(this.state.word /*, this.state.start, num*/);
     console.log('clicked');
+
+    // window.sessionStorage.removeItem('lastSearchedWord');
+
+    window.sessionStorage.setItem('lastSearchedWord', this.state.word);
   }
 
   handleInputChange(e) {
@@ -202,6 +281,7 @@ class App extends Component {
         <Row>
           <Col sm={7}>
             <input
+              value={this.state.word}
               type="text"
               className="form-control"
               onChange={this.handleInputChange.bind(this)}
@@ -219,7 +299,9 @@ class App extends Component {
         </Row>
         <Row id="all-image-holder">{data}</Row>
         <Row>
-          <button className="load-more">Load more </button>
+          <button className="load-more" onClick={this.loadMore}>
+            Load more{' '}
+          </button>
         </Row>
       </div>
     );
