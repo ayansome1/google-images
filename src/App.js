@@ -22,21 +22,14 @@ class App extends Component {
     let lastSearchedWord = window.sessionStorage.getItem('lastSearchedWord');
 
     if (lastSearchedWord) {
-      // this.getImages(lastSearchedWord);
       this.setState({ word: lastSearchedWord });
 
       this.setState({ searchedWord: lastSearchedWord });
+      this.getImages(lastSearchedWord);
     }
-    this.getImages(lastSearchedWord);
-    // this.openImage();
-    // this.openImageHandler = (index, item) => {
-    //   openImage(index, item);
-    // };
   }
 
-  getImages(word /* , start, num*/) {
-    // console.log(word, this.state.start, num);
-
+  getImages(word) {
     let url =
       'https://www.googleapis.com/customsearch/v1?key=AIzaSyDb5J1g2o1PXmOQTgdRX4sYWcCUfXup2iU&cx=006532907512921989364:ybctrnxiwza&searchType=image';
     url = url + '&q=' + word;
@@ -45,16 +38,13 @@ class App extends Component {
 
     console.log(url);
 
-    // let newStart = this.state.start + num;
-
     axios
       .get(url)
       .then(res => {
-        // console.log(res.data);
         this.setState(
           {
             loading: false,
-            data: res.data.items, // this.state.data.push(...res.data.items),
+            data: res.data.items,
             firstItemIndex: 0,
             lastItemIndex: res.data.items.length - 1,
             start: 1,
@@ -75,7 +65,6 @@ class App extends Component {
                 items[it].link === window.sessionStorage.getItem('link') &&
                 items[it].image.thumbnailLink === window.sessionStorage.getItem('thumbnailLink')
               ) {
-                // console.log('******FOUND*********');
                 this.openImage(parseInt(it), items[it]);
 
                 break;
@@ -104,37 +93,16 @@ class App extends Component {
     axios
       .get(url)
       .then(res => {
-        // console.log(res.data);
-
         let newLastItemIndex = this.state.lastItemIndex + res.data.items.length;
 
         let newData = this.state.data;
         newData.push(...res.data.items);
 
-        this.setState(
-          {
-            // loading: false,
-            data: newData, // this.state.data.push(...res.data.items),
-            // firstItemIndex: 0,
-            lastItemIndex: newLastItemIndex,
-            start: newStart,
-          } /* ,
-          () => {
-            // to retain expanding image preview on page refresh
-            let items = this.state.data;
-
-            for (let it in items) {
-              if (
-                items[it].link === window.sessionStorage.getItem('link') &&
-                items[it].image.thumbnailLink === window.sessionStorage.getItem('thumbnailLink')
-              ) {
-                this.openImage(parseInt(it), items[it]);
-
-                break;
-              }
-            }
-          } */
-        );
+        this.setState({
+          data: newData,
+          lastItemIndex: newLastItemIndex,
+          start: newStart,
+        });
       })
       .catch(err => {
         console.log('error in getting image', err);
@@ -152,7 +120,6 @@ class App extends Component {
     // hide image if clicked again
     var x = document.getElementById('img-box-for-' + clickedItemIndex);
     if (x) {
-      // console.log(x.id);
       this.removeDiv(x.id);
       return;
     }
@@ -184,9 +151,6 @@ class App extends Component {
     // newNode.scrollIntoView();
     let leftArrow = document.getElementById('left-arrow');
     leftArrow.onclick = () => {
-      // console.log('---', this.state);
-      // console.log(this.state.openedImageId - 1, this.state.data[this.state.openedImageId - 1]);
-
       if (this.state.openedImageId - 1 >= this.state.firstItemIndex) {
         this.openImage(this.state.openedImageId - 1, this.state.data[this.state.openedImageId - 1]);
       }
@@ -194,9 +158,6 @@ class App extends Component {
 
     let rightArrow = document.getElementById('right-arrow');
     rightArrow.onclick = () => {
-      // console.log('---', this.state);
-      // console.log(this.state.openedImageId + 1, this.state.data[this.state.openedImageId + 1]);
-
       if (this.state.openedImageId + 1 <= this.state.lastItemIndex) {
         this.openImage(this.state.openedImageId + 1, this.state.data[this.state.openedImageId + 1]);
       }
@@ -207,7 +168,6 @@ class App extends Component {
     this.setState({ openedImageId: index });
     window.sessionStorage.setItem('link', item.link);
     window.sessionStorage.setItem('thumbnailLink', item.image.thumbnailLink);
-    // window.sessionStorage.setItem('lastSearchedWord', this.state.searchedWord);
 
     var allImageHolder = document.getElementById('all-image-holder');
 
@@ -237,34 +197,21 @@ class App extends Component {
 
   searchImages() {
     window.sessionStorage.removeItem('link');
-    // console.log(window.sessionStorage.getItem('link'));
     window.sessionStorage.removeItem('thumbnailLink');
     this.setState({ searchedWord: this.state.word });
-    this.getImages(this.state.word /*, this.state.start, num*/);
-    // console.log('clicked');
-
-    // window.sessionStorage.removeItem('lastSearchedWord');
+    this.getImages(this.state.word);
 
     window.sessionStorage.setItem('lastSearchedWord', this.state.word);
   }
 
   handleInputChange(e) {
     this.setState({ word: e.target.value });
-    // console.log(e.key);
-    // if (e.keyCode === 13) {
-    //   this.searchImages();
-    //   // console.log('value', e.target.value);
-    //   // put the login here
-    // }
-    // console.log(e.target.value);
-    // this.setState({ value: e.target.value });
   }
 
   render() {
     let data, loadMore;
     if (this.state.loading === true) {
-      // console.log(data);
-      data = null; //<div>Loading...</div>;
+      data = null;
     } else {
       data = this.state.data.map((item, index) => {
         return (
@@ -306,6 +253,7 @@ class App extends Component {
                   this.searchImages();
                 }
               }}
+              placeholder="Type and press enter to search..."
               onChange={this.handleInputChange.bind(this)}
             />
           </Col>
