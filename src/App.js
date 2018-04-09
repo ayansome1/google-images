@@ -5,6 +5,7 @@ import searchIcon from './images/search.svg';
 import prevIcon from './images/prev_icon.svg';
 import { Bootstrap, Grid, Row, Col } from 'react-bootstrap';
 import axios from 'axios';
+import config from './config/config.json';
 let num = 10;
 
 class App extends Component {
@@ -27,11 +28,11 @@ class App extends Component {
       this.setState({ searchedWord: lastSearchedWord });
       this.getImages(lastSearchedWord);
     }
+    console.log(config.baseUrl);
   }
 
   getImages(word) {
-    let url =
-      'https://www.googleapis.com/customsearch/v1?key=AIzaSyDb5J1g2o1PXmOQTgdRX4sYWcCUfXup2iU&cx=006532907512921989364:ybctrnxiwza&searchType=image';
+    let url = config.baseUrl + '&key=' + config.key + '&cx=' + config.cx;
     url = url + '&q=' + word;
     url = url + '&start=' + 1;
     url = url + '&num=' + num;
@@ -79,8 +80,7 @@ class App extends Component {
   }
 
   loadMore() {
-    let url =
-      'https://www.googleapis.com/customsearch/v1?key=AIzaSyDb5J1g2o1PXmOQTgdRX4sYWcCUfXup2iU&cx=006532907512921989364:ybctrnxiwza&searchType=image';
+    let url = config.baseUrl + '&key=' + config.key + '&cx=' + config.cx;
 
     let newStart = this.state.start + num;
 
