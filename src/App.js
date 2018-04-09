@@ -4,7 +4,7 @@ import searchIcon from './images/search.svg';
 import { Row, Col } from 'react-bootstrap';
 import axios from 'axios';
 import config from './config/config.json';
-let num = 10;
+let num = 10; // max number of images to fetch at one API call
 
 class App extends Component {
   constructor(props) {
@@ -20,6 +20,7 @@ class App extends Component {
   componentDidMount() {
     let lastSearchedWord = window.sessionStorage.getItem('lastSearchedWord');
 
+    // On page refresh show content based on last searched string  
     if (lastSearchedWord) {
       this.setState({ word: lastSearchedWord });
       this.setState({ searchedWord: lastSearchedWord });
@@ -27,6 +28,7 @@ class App extends Component {
     }
   }
 
+  // call Google API and fetch data when user hits search button or enter
   getImages(word) {
     let url = config.baseUrl + '&key=' + config.key + '&cx=' + config.cx;
     url = url + '&q=' + word;
@@ -75,6 +77,7 @@ class App extends Component {
       });
   }
 
+  // Pagination
   loadMore() {
     let url = config.baseUrl + '&key=' + config.key + '&cx=' + config.cx;
 
@@ -105,28 +108,30 @@ class App extends Component {
       });
   }
 
+  // This is required to close the image preview
   removeDiv(id) {
     var elem = document.getElementById(id);
     return elem.parentNode.removeChild(elem);
   }
 
+  // This is required to open the image preview in a new row just below the clicked image
   addNewDiv(index, item, clickedItemIndex) {
     var referenceNode = document.getElementById('img-box-' + index);
 
-    // hide image if clicked again
+    // hide image preview if same image clicked again
     var x = document.getElementById('img-box-for-' + clickedItemIndex);
     if (x) {
       this.removeDiv(x.id);
       return;
     }
 
-    // remove existing opened image
+    // remove existing opened image preview
     var y = document.getElementsByClassName('image-open-details');
     if (y[0]) {
       this.removeDiv(y[0].id);
     }
 
-    // Create div for new image opened
+    // Create div for new image preview
     var newNode = document.createElement('div');
     newNode.id = 'img-box-for-' + clickedItemIndex;
     newNode.className = 'image-open-details col-sm-12';
@@ -145,13 +150,17 @@ class App extends Component {
 
     referenceNode.after(newNode);
     // newNode.scrollIntoView();
+    
+    // left arrow functionality
     let leftArrow = document.getElementById('left-arrow');
+    
     leftArrow.onclick = () => {
       if (this.state.openedImageId - 1 >= this.state.firstItemIndex) {
         this.openImage(this.state.openedImageId - 1, this.state.data[this.state.openedImageId - 1]);
       }
     };
 
+    // right arrow functionality
     let rightArrow = document.getElementById('right-arrow');
     rightArrow.onclick = () => {
       if (this.state.openedImageId + 1 <= this.state.lastItemIndex) {
@@ -160,6 +169,7 @@ class App extends Component {
     };
   }
 
+  // calculates the position where the image preview is to be opened
   openImage(index, item) {
     this.setState({ openedImageId: index });
     window.sessionStorage.setItem('link', item.link);
@@ -172,6 +182,8 @@ class App extends Component {
     let lastItemOfClickedRow;
 
     let windowWidth = window.innerWidth;
+
+    // image preview position is based on the screen size
     if (windowWidth <= 575) {
       lastItemOfClickedRow = index;
     } else if (windowWidth <= 767) {
