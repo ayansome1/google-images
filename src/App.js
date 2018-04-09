@@ -28,7 +28,6 @@ class App extends Component {
       this.setState({ searchedWord: lastSearchedWord });
       this.getImages(lastSearchedWord);
     }
-    console.log(config.baseUrl);
   }
 
   getImages(word) {
@@ -199,7 +198,9 @@ class App extends Component {
     window.sessionStorage.removeItem('link');
     window.sessionStorage.removeItem('thumbnailLink');
     this.setState({ searchedWord: this.state.word });
-    this.getImages(this.state.word);
+    if (this.state.word) {
+      this.getImages(this.state.word);
+    }
 
     window.sessionStorage.setItem('lastSearchedWord', this.state.word);
   }
