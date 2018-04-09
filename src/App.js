@@ -11,7 +11,7 @@ let num = 10;
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { loading: true, start: 1, searchedWord: '', dataLoaded: false };
+    this.state = { loading: true, start: 1, searchedWord: '', dataLoaded: false, word: '' };
     this.addNewDiv = this.addNewDiv.bind(this);
     this.openImage = this.openImage.bind(this);
     this.getImages = this.getImages.bind(this);
