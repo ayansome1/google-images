@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-// import logo from './logo.svg';
 import './App.css';
 import searchIcon from './images/search.svg';
 import { Row, Col } from 'react-bootstrap';
@@ -23,7 +22,6 @@ class App extends Component {
 
     if (lastSearchedWord) {
       this.setState({ word: lastSearchedWord });
-
       this.setState({ searchedWord: lastSearchedWord });
       this.getImages(lastSearchedWord);
     }
